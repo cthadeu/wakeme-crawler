@@ -1,13 +1,15 @@
 from models import *
 from bs4 import BeautifulSoup
 from urlparse import urlparse
-import urllib2
 from types import *
+from lepl.apps.rfc3696 import HttpUrl
+import urllib2
 
 class Extractor:		
 
-	def __init__(self, source):
+	def __init__(self, source, host):
 		self.source = source
+		self.host = host
 	
 
 	def init(self):
@@ -15,23 +17,19 @@ class Extractor:
 		domObjects = BeautifulSoup(htmlPage)
 
 		for linkObject in domObjects.findAll('a'):
-			url = linkObject.get("href")
-			print url
+			url = checkURL(linkObject.get("href"))
+			           
+			validator = HttpUrl()
 
-			if self.validate(url):
-				if not(Link.exists(url)):
-					Link(url=url, source=self.source).save()
+			if validator(url):				
+				Link(url=url, source=self.source).save()
 
-	def validate(self, u):
-
-		if type(u) is NoneType:
-			return False
+	def checkURL(self, url):
+		if not url.contains(self.host):
+			return ""
 
 		if not u.startswith("http://"):
-			return False
+			return = "http://" + url
 
-		return True
-
-	
 		
 		
