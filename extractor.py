@@ -4,6 +4,12 @@ from urlparse import urlparse
 from types import *
 from lepl.apps.rfc3696 import HttpUrl
 import urllib2
+import logging
+
+log = logging.getLogger('extractor')
+log.addHandler(logging.StreamHandler())
+log.handlers[0].setFormatter(logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s"))
+log.setLevel(logging.DEBUG)
 
 class Extractor:		
 
@@ -16,7 +22,7 @@ class Extractor:
 		htmlPage = urllib2.urlopen(self.source.url)
 		domObjects = BeautifulSoup(htmlPage)
 
-		print "HOST => " + self.host
+		log.debug("HOST =>" + self.host)
 
 		validator = HttpUrl()
 
@@ -25,9 +31,9 @@ class Extractor:
 			if validator(url):					
 				try:
 					Link(url=url, source=self.source).save()
-					print "saved url => " + url		
+					log.debug("Saving Link => " + url)						
 				except Exception, e:
-					print "Link ja extraido"
+					log.debug("Link already saved")
 				
 
 	def checkURL(self, url):
