@@ -9,7 +9,7 @@ class Extractor:
 
 	def __init__(self, source, host):
 		self.source = source
-		self.host = host
+		self.host = self.checkHost(host)
 	
 
 	def init(self):
@@ -21,13 +21,11 @@ class Extractor:
 		validator = HttpUrl()
 
 		for linkObject in domObjects.findAll('a'):
-			url = self.checkURL(linkObject.get("href"))
-			print url
-
-			if validator(url):	
-				print "valid url => " + url		
+			url = self.checkURL(linkObject.get("href"))			
+			if validator(url):					
 				try:
 					Link(url=url, source=self.source).save()
+					print "saved url => " + url		
 				except Exception, e:
 					print "Link ja extraido"
 				
@@ -40,9 +38,14 @@ class Extractor:
 		if url.find("#") == 0:
 			return ""
 
-		if not url.find(self.host):
+		if not self.host in url:
 			return ""
 
+		if url.find("/") == 0:
+			return "http://"+self.host+"/"+url
+
 		return url
-		
+
+	def checkHost(self, host):
+		return host.replace("www.","")		
 		
