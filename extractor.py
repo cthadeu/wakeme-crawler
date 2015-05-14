@@ -16,20 +16,33 @@ class Extractor:
 		htmlPage = urllib2.urlopen(self.source.url)
 		domObjects = BeautifulSoup(htmlPage)
 
-		for linkObject in domObjects.findAll('a'):
-			url = checkURL(linkObject.get("href"))
-			           
-			validator = HttpUrl()
+		print "HOST => " + self.host
 
-			if validator(url):				
-				Link(url=url, source=self.source).save()
+		validator = HttpUrl()
+
+		for linkObject in domObjects.findAll('a'):
+			url = self.checkURL(linkObject.get("href"))
+			print url
+
+			if validator(url):	
+				print "valid url => " + url		
+				try:
+					Link(url=url, source=self.source).save()
+				except Exception, e:
+					print "Link ja extraido"
+				
 
 	def checkURL(self, url):
-		if not url.contains(self.host):
+
+		if type(url) is NoneType:
 			return ""
 
-		if not u.startswith("http://"):
-			return = "http://" + url
+		if url.find("#") == 0:
+			return ""
 
+		if not url.find(self.host):
+			return ""
+
+		return url
 		
 		
