@@ -4,7 +4,7 @@ from models import *
 from extractor import *
 from urlparse import urlparse
 
-class TestExtractor(unittest.TestCase):
+class TestMiner(unittest.TestCase):
 	
 	def setUp(self):
 		connect('crawler', host='mongodb://localhost/crawler')

@@ -24,6 +24,10 @@ class Link(Document):
 	@staticmethod
 	def exists(link):
 		return Link.objects(url=link).count() > 0		
+	
+	@staticmethod
+	def findLinksBySource(source):
+		return Links.objects(source=source)
 
 	
 class News(Document):
